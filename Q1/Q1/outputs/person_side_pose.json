@@ -1,0 +1,10 @@
+{
+  "person_image": "person_side_pose.jpg",
+  "person_attributes": {
+    "pose_category": "side",
+    "upper_body_visible": true,
+    "lower_body_visible": true
+  },
+  "model_used": "MiniCPM-V-2.6",
+  "confidence_notes": "Narrow apparent shoulder span (0.076)."
+}
