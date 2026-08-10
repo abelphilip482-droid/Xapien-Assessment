@@ -93,5 +93,23 @@ The Q1 output directory contains JSON results for the provided person and garmen
 - The side-facing and seated edge cases were classified correctly.
 - The no-person edge case was detected correctly.
 - Non-fatal warnings from Transformers/bitsandbytes were observed during inference but did not prevent successful processing.
+### Q2
 
-Additional failures and limitations for Q2-Q5 will be documented as those components are implemented.
+* The crossed-arms edge case (`person_crossed_arms.jpg`) was not successfully handled in the human parsing pipeline.
+* The crossed-arms parsing output was therefore not completed.
+* In the other five person images, the **left-hand region was not parsed correctly**.
+* This parsing issue did not affect the final try-on outputs in Q3 because the incorrectly parsed hand region did not materially affect the garment-transfer area used by the try-on pipeline.
+
+### Q3
+
+* The end-to-end try-on inference was successfully completed for all five required person-garment pairs.
+* The outputs were generated in the correct corresponding order:
+
+  * `person_01 + garment_01`
+  * `person_02 + garment_02`
+  * `person_03 + garment_03`
+  * `person_04 + garment_04`
+  * `person_05 + garment_05`
+* No pairing/order mismatch occurred during inference.
+* The generated outputs were successfully saved for all five pairs.
+
