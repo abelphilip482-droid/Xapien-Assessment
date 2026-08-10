@@ -51,7 +51,7 @@ The dedicated pose edge cases were tested successfully:
 |---|---|---|---|
 | `person_side_pose.jpg` | side | side | PASS |
 | `person_seated.jpg` | seated | seated | PASS |
-| `no_person.jpg` | no_person | no_person | PASS |
+| `edge_person_crossed_arms.json` | seated | seated | PASS |
 
 ### Q1 outputs:
 
