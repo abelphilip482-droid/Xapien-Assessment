@@ -8,7 +8,6 @@
 **Colab notebook links (if used):** To be added  
 
 ---
-
 ## Q1 - Garment & Body Understanding
 
 ### VLM chosen and why:
@@ -39,19 +38,20 @@ The main processing steps are:
 
 ### Known limitations:
 
-- Pose classification may be less reliable when the body is heavily occluded.
-- VLM-generated garment attributes can occasionally be uncertain for visually ambiguous or partially occluded regions.
-- The quantized model may produce slower inference depending on the available Colab GPU resources.
+* Pose classification may be less reliable when the body is heavily occluded.
+* VLM-generated garment attributes can occasionally be uncertain for visually ambiguous or partially occluded regions.
+* The quantized model may produce slower inference depending on the available Colab GPU resources.
 
 ### Q1 validation:
 
 The dedicated pose edge cases were tested successfully:
 
-| Image | Expected | Predicted | Status |
-|---|---|---|---|
-| `person_side_pose.jpg` | side | side | PASS |
-| `person_seated.jpg` | seated | seated | PASS |
-| `edge_person_crossed_arms.json` | seated | seated | PASS |
+| Image                  | Expected | Predicted | Status |
+| ---------------------- | -------- | --------- | ------ |
+| `person_side_pose.jpg` | side     | side      | PASS   |
+| `person_seated.jpg`    | seated   | seated    | PASS   |
+
+The no-person edge case was also detected correctly.
 
 ### Q1 outputs:
 
@@ -72,7 +72,9 @@ The Q1 output directory contains JSON results for the provided person and garmen
   Run the Q2 notebook/script. The pipeline loads Grounding DINO, SAM, and U2Net, processes the person images, generates the required segmentation/agnostic representations, and processes the garment images for background removal and masking.
 
 * **Edge cases handled / failed:**
-  The crossed-arms edge case (`person_crossed_arms.jpg`) was not successfully handled. For the other five person images, the **left-hand region was not parsed correctly**.
+  The crossed-arms edge case (`person_crossed_arms.jpg`) was **not successfully handled** in the human parsing pipeline.
+
+  For the other five person images, the **left-hand region was not parsed correctly**.
 
   This parsing issue did not affect the final Q3 try-on outputs because the incorrectly parsed hand region did not materially affect the garment-transfer area.
 
@@ -105,30 +107,35 @@ The Q1 output directory contains JSON results for the provided person and garmen
 
   All five corresponding try-on outputs were successfully generated and saved.
 
+---
+
 ## Q4 - Automated Quality Evaluation
 
-- Metrics implemented: To be completed.
-- VLM-as-judge rubric prompt (paste it here): To be completed.
-- Results: `evaluation_template_q4.csv` will be completed and committed to the repository.
+* **Metrics implemented:** To be completed.
+* **VLM-as-judge rubric prompt (paste it here):** To be completed.
+* **Results:** `evaluation_template_q4.csv` will be completed and committed to the repository.
 
 ## Q5 - Web Demo
 
-- Framework (Gradio/Streamlit): To be completed.
-- How to launch: To be completed.
-- Guardrails implemented: To be completed.
+* **Framework (Gradio/Streamlit):** To be completed.
+* **How to launch:** To be completed.
+* **Guardrails implemented:** To be completed.
 
-## Honest failure log
+---
+
+## Honest Failure Log
 
 ### Q1
 
-- MiniCPM-V 2.6 successfully processed the provided person and garment images.
-- A safe pose-classification wrapper was implemented to handle cases where no pose landmarks are detected.
-- The side-facing and seated edge cases were classified correctly.
-- The no-person edge case was detected correctly.
-- Non-fatal warnings from Transformers/bitsandbytes were observed during inference but did not prevent successful processing.
+* MiniCPM-V 2.6 successfully processed the provided person and garment images.
+* A safe pose-classification wrapper was implemented to handle cases where no pose landmarks are detected.
+* The side-facing and seated edge cases were classified correctly.
+* The no-person edge case was detected correctly.
+* Non-fatal warnings from Transformers/bitsandbytes were observed during inference but did not prevent successful processing.
+
 ### Q2
 
-* The crossed-arms edge case (`person_crossed_arms.jpg`) was not successfully handled in the human parsing pipeline.
+* The crossed-arms edge case (`person_crossed_arms.jpg`) was **not successfully handled** in the human parsing pipeline.
 * The crossed-arms parsing output was therefore not completed.
 * In the other five person images, the **left-hand region was not parsed correctly**.
 * This parsing issue did not affect the final try-on outputs in Q3 because the incorrectly parsed hand region did not materially affect the garment-transfer area used by the try-on pipeline.
@@ -143,6 +150,6 @@ The Q1 output directory contains JSON results for the provided person and garmen
   * `person_03 + garment_03`
   * `person_04 + garment_04`
   * `person_05 + garment_05`
-* No pairing/order mismatch occurred during inference.
-* The generated outputs were successfully saved for all five pairs.
+* No pairing or ordering mismatch occurred during inference.
+* All five generated try-on outputs were successfully saved.
 
