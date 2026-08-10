@@ -1,0 +1,11 @@
+{
+  "person_image": "person_side_pose.jpg",
+  "garment_image": null,
+  "person_attributes": {
+    "pose_category": "side",
+    "upper_body_visible": true,
+    "lower_body_visible": true
+  },
+  "confidence_notes": "Narrow shoulder span (0.084) indicates rotation.",
+  "model_used": "MiniCPM-V-2.6 + MediaPipe Pose Landmarker"
+}

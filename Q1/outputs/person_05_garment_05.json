@@ -1,0 +1,18 @@
+{
+  "person_image": "person_05.png",
+  "garment_image": "garment_05.jpg",
+  "garment_attributes": {
+    "type": "t-shirt",
+    "sleeve_length": "short",
+    "neckline": "round",
+    "primary_color": "white",
+    "pattern": "graphic print"
+  },
+  "person_attributes": {
+    "pose_category": "front-facing",
+    "upper_body_visible": true,
+    "lower_body_visible": true
+  },
+  "confidence_notes": "Broad shoulder span (0.343).",
+  "model_used": "MiniCPM-V-2.6 + MediaPipe Pose Landmarker"
+}

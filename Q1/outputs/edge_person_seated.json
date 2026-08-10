@@ -1,0 +1,11 @@
+{
+  "person_image": "person_seated.jpg",
+  "garment_image": null,
+  "person_attributes": {
+    "pose_category": "seated",
+    "upper_body_visible": true,
+    "lower_body_visible": true
+  },
+  "confidence_notes": "Knees close to hip level (delta=0.031).",
+  "model_used": "MiniCPM-V-2.6 + MediaPipe Pose Landmarker"
+}
