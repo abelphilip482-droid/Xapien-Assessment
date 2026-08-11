@@ -1,11 +1,14 @@
 # Virtual Try-On Assessment - Submission
 
 **Candidate name:** Abel Philip Thomas
+
 **Email:** [abelphilip482@gmail.com](mailto:abelphilip482@gmail.com)
+
 **Date:** August 11, 2026
+
 **GitHub repo link:** https://github.com/abelphilip482-droid/Xapien-Assessment
+
 **Demo video link (max 5 min):** To be added
-**Colab notebook links (if used):** To be added
 
 ---
 
@@ -13,13 +16,19 @@
 
 ### VLM chosen and why:
 
-**MiniCPM-V 2.6** was selected for Q1. It is an open-source vision-language model released under the Apache 2.0 license, satisfying the assessment requirement for an open and freely downloadable model.
+**MiniCPM-V 2.6** was selected for Q1.
+
+It is an open-source vision-language model released under the Apache 2.0 license, satisfying the assessment requirement for an open and freely downloadable model.
 
 The quantized `MiniCPM-V-2_6-int4` version was used to make inference practical on the available Google Colab GPU environment.
 
-MiniCPM-V 2.6 was selected because it supports visual understanding of both person and garment images and can extract structured attributes such as garment type, sleeve length, neckline, primary color, pattern, body visibility, and other visual information.
+MiniCPM-V 2.6 was selected because it supports visual understanding of both person and garment images.
 
-A MediaPipe pose-landmark-based classifier is additionally used for pose classification. This provides a deterministic method for the required pose categories and ensures that the dedicated side-facing and seated edge cases are classified correctly.
+It can extract structured attributes such as garment type, sleeve length, neckline, primary color, pattern, body visibility, and other visual information.
+
+A MediaPipe pose-landmark-based classifier is additionally used for pose classification.
+
+This provides a deterministic method for the required pose categories and ensures that the dedicated side-facing and seated edge cases are classified correctly.
 
 The final Q1 JSON outputs follow the structure provided in `sample_output_q1.json`.
 
@@ -45,7 +54,7 @@ The main processing steps are:
 
 ### Q1 validation:
 
-The dedicated pose edge cases were tested successfully:
+The dedicated pose edge cases were tested successfully.
 
 | Image                  | Expected | Predicted | Status |
 | ---------------------- | -------- | --------- | ------ |
@@ -64,7 +73,9 @@ The Q1 output directory contains JSON results for the provided person and garmen
 
 ### Models used:
 
-**Grounding DINO** was used for object and region detection, including the person, face, hair, arms, upper clothing, and lower body. Confidence thresholds of **0.25, 0.15, and 0.10** were used for the detections.
+**Grounding DINO** was used for object and region detection, including the person, face, hair, arms, upper clothing, and lower body.
+
+Confidence thresholds of **0.25, 0.15, and 0.10** were used for the detections.
 
 **SAM (Segment Anything Model)** was used to convert the Grounding DINO bounding boxes into pixel-level segmentation masks and generate the required person and semantic masks.
 
@@ -72,7 +83,15 @@ The Q1 output directory contains JSON results for the provided person and garmen
 
 ### How to run:
 
-Run the Q2 notebook/script. The pipeline loads Grounding DINO, SAM, and U2Net, processes the person images, generates the required segmentation and agnostic representations, and processes the garment images for background removal and masking.
+Run the Q2 notebook/script.
+
+The pipeline loads Grounding DINO, SAM, and U2Net.
+
+It processes the person images.
+
+It generates the required segmentation and agnostic representations.
+
+It also processes the garment images for background removal and masking.
 
 ### Edge cases handled / failed:
 
@@ -90,7 +109,11 @@ The remaining person and garment segmentation outputs were generated successfull
 
 ### Try-on model chosen and why:
 
-**CatVTON** was selected as the end-to-end virtual try-on model because it is an open-source diffusion-based try-on model and is relatively lightweight and suitable for running on a free Google Colab T4 GPU.
+**CatVTON** was selected as the end-to-end virtual try-on model.
+
+It is an open-source diffusion-based try-on model.
+
+It is relatively lightweight and suitable for running on a free Google Colab T4 GPU.
 
 ### Hardware used:
 
@@ -108,7 +131,11 @@ The inference configuration was kept at **384×512 resolution** with **30 infere
 
 Run the Q3 inference notebook/script.
 
-The pipeline takes the person image, garment image, and clothing mask produced during preprocessing, passes them to CatVTON, and saves the generated try-on image.
+The pipeline takes the person image, garment image, and clothing mask produced during preprocessing.
+
+These inputs are passed to CatVTON.
+
+The generated try-on image is then saved to the output directory.
 
 ### Output:
 
@@ -130,7 +157,7 @@ All five corresponding try-on outputs were successfully generated and saved.
 
 ### Metrics implemented:
 
-Two quantitative metrics were calculated for each generated try-on result:
+Two quantitative metrics were calculated for each generated try-on result.
 
 1. **Garment Fidelity Score** – measures similarity between the reference garment and the generated try-on result.
 2. **Identity Preservation Score** – measures similarity between the original person's face and the face in the generated try-on result using face embeddings and cosine similarity.
@@ -161,9 +188,13 @@ The evaluation prompt instructed the model to assess:
 
 The VLM was also instructed to provide qualitative reasons and identify visible artifacts.
 
-During testing, the VLM returned identical numerical values (`0.50`) for all five pairs despite providing different qualitative explanations. Therefore, these repeated VLM numerical values were **not used as the final quantitative scores**.
+During testing, the VLM returned identical numerical values (`0.50`) for all five pairs despite providing different qualitative explanations.
 
-The VLM output was retained as a qualitative judge for reasons and artifact observations, while the quantitative evaluation uses the independently calculated garment-fidelity and identity-preservation metrics.
+Therefore, these repeated VLM numerical values were **not used as the final quantitative scores**.
+
+The VLM output was retained as a qualitative judge for reasons and artifact observations.
+
+The quantitative evaluation uses the independently calculated garment-fidelity and identity-preservation metrics.
 
 ### Results:
 
@@ -204,7 +235,7 @@ A basic web-demo prototype was attempted using **Gradio** to expose the virtual 
 
 However, the final Q5 implementation did **not fully meet the requirements of the assessment**.
 
-In particular, the virtual try-on results produced through the demo were not consistently accurate when compared with the outputs generated during the dedicated Q3 inference stage.
+The virtual try-on results produced through the demo were not consistently accurate when compared with the outputs generated during the dedicated Q3 inference stage.
 
 The Q3 CatVTON pipeline and its five generated outputs remain the more reliable results of the implementation.
 
@@ -212,12 +243,13 @@ The Q3 CatVTON pipeline and its five generated outputs remain the more reliable 
 
 Due to the limited time available for the assessment, the complete Q2 → Q3 → Q4 integration required for a reliable interactive demo could not be completed and validated properly.
 
-The following parts of Q5 were therefore incomplete or insufficiently validated:
+The interactive virtual try-on results were not consistently comparable to the dedicated Q3 CatVTON outputs.
 
-* The interactive virtual try-on results were not consistently comparable to the dedicated Q3 CatVTON outputs.
-* The Q4 automated evaluation was not fully integrated into the web application.
-* The required guardrail behavior for all provided edge cases was not validated within the final application.
-* End-to-end testing of the complete interactive pipeline was limited by the available development time and Colab GPU constraints.
+The Q4 automated evaluation was not fully integrated into the web application.
+
+The required guardrail behavior for all provided edge cases was not validated within the final application.
+
+End-to-end testing of the complete interactive pipeline was limited by the available development time and Colab GPU constraints.
 
 ### Intended design:
 
@@ -237,20 +269,24 @@ Person Image + Garment Image
     Result + Quality Scores
 ```
 
-The intended guardrails were also designed to:
+The intended guardrails were:
 
 * Reject inputs where no person is detected.
 * Warn when the person is seated.
 * Warn when the person is shown from a side view.
 * Display an estimated processing time.
 
-These components represent the intended production flow, but the complete implementation was not sufficiently validated within the available assessment time.
+These components represent the intended production flow.
+
+However, the complete implementation was not sufficiently validated within the available assessment time.
 
 ### Honest assessment:
 
 Q5 should therefore be considered a **prototype-level and incomplete integration** rather than a fully validated mini web application.
 
-The main limitation was not the absence of the underlying Q3 try-on pipeline; rather, it was the time required to reliably connect and validate all previous stages inside a single interactive application.
+The main limitation was not the absence of the underlying Q3 try-on pipeline.
+
+The main limitation was the time required to reliably connect and validate all previous stages inside a single interactive application.
 
 With additional development time and proper technical guidance, the implementation could be significantly improved by:
 
