@@ -1,13 +1,14 @@
 # Virtual Try-On Assessment - Submission
 
-**Candidate name:** Abel Philip Thomas  
-**Email:** abelphilip482@gmail.com
-**Date:** August 9, 2026  
-**GitHub repo link:** https://github.com/abelphilip482-droid/Xapien-Assessment  
-**Demo video link (max 5 min):** To be added  
-**Colab notebook links (if used):** To be added  
+**Candidate name:** Abel Philip Thomas
+**Email:** [abelphilip482@gmail.com](mailto:abelphilip482@gmail.com)
+**Date:** August 11, 2026
+**GitHub repo link:** https://github.com/abelphilip482-droid/Xapien-Assessment
+**Demo video link (max 5 min):** To be added
+**Colab notebook links (if used):** To be added
 
 ---
+
 ## Q1 - Garment & Body Understanding
 
 ### VLM chosen and why:
@@ -61,18 +62,15 @@ The Q1 output directory contains JSON results for the provided person and garmen
 
 ## Q2 - Human Parsing & Segmentation
 
-* **Models used (parsing / background removal):**
-  **Grounding DINO** was used for object/region detection, including the person, face, hair, arms, upper clothing, and lower body. Confidence thresholds of **0.25, 0.15, and 0.10** were used for the detections.
+* **Models used (parsing / background removal):** **Grounding DINO** was used for object/region detection, including the person, face, hair, arms, upper clothing, and lower body. Confidence thresholds of **0.25, 0.15, and 0.10** were used for the detections.
 
   **SAM (Segment Anything Model)** was used to convert the Grounding DINO bounding boxes into pixel-level segmentation masks and generate the required person/semantic masks.
 
   **U2Net** was also used for human segmentation/background removal during the Q2 preprocessing pipeline.
 
-* **How to run:**
-  Run the Q2 notebook/script. The pipeline loads Grounding DINO, SAM, and U2Net, processes the person images, generates the required segmentation/agnostic representations, and processes the garment images for background removal and masking.
+* **How to run:** Run the Q2 notebook/script. The pipeline loads Grounding DINO, SAM, and U2Net, processes the person images, generates the required segmentation/agnostic representations, and processes the garment images for background removal and masking.
 
-* **Edge cases handled / failed:**
-  The crossed-arms edge case (`person_crossed_arms.jpg`) was **not successfully handled** in the human parsing pipeline.
+* **Edge cases handled / failed:** The crossed-arms edge case (`person_crossed_arms.jpg`) was **not successfully handled** in the human parsing pipeline.
 
   For the other five person images, the **left-hand region was not parsed correctly**.
 
@@ -84,20 +82,15 @@ The Q1 output directory contains JSON results for the provided person and garmen
 
 ## Q3 - End-to-End Try-On
 
-* **Try-on model chosen and why:**
-  **CatVTON** was selected as the end-to-end virtual try-on model because it is an open-source diffusion-based try-on model and is relatively lightweight and suitable for running on a free Google Colab T4 GPU.
+* **Try-on model chosen and why:** **CatVTON** was selected as the end-to-end virtual try-on model because it is an open-source diffusion-based try-on model and is relatively lightweight and suitable for running on a free Google Colab T4 GPU.
 
-* **Hardware used (GPU, VRAM):**
-  Google Colab **Tesla T4 GPU — 14.56 GB VRAM**. Inference was performed at **384×512 resolution** with **30 inference steps**.
+* **Hardware used (GPU, VRAM):** Google Colab **Tesla T4 GPU — 14.56 GB VRAM**. Inference was performed at **384×512 resolution** with **30 inference steps**.
 
-* **Constraints hit and workarounds:**
-  GPU memory was a constraint when running the diffusion-based try-on pipeline. The inference configuration was kept at **384×512 resolution** with **30 inference steps** to make the pipeline practical within the available Tesla T4 GPU memory.
+* **Constraints hit and workarounds:** GPU memory was a constraint when running the diffusion-based try-on pipeline. The inference configuration was kept at **384×512 resolution** with **30 inference steps** to make the pipeline practical within the available Tesla T4 GPU memory.
 
-* **How to run:**
-  Run the Q3 inference notebook/script. The pipeline takes the person image, garment image, and clothing mask produced during preprocessing, passes them to CatVTON, and saves the generated try-on image.
+* **How to run:** Run the Q3 inference notebook/script. The pipeline takes the person image, garment image, and clothing mask produced during preprocessing, passes them to CatVTON, and saves the generated try-on image.
 
-* **Output:**
-  End-to-end inference was successfully completed for all five required pairs. The correct person-garment ordering was maintained:
+* **Output:** End-to-end inference was successfully completed for all five required pairs. The correct person-garment ordering was maintained:
 
   1. `person_01 + garment_01`
   2. `person_02 + garment_02`
@@ -111,9 +104,71 @@ The Q1 output directory contains JSON results for the provided person and garmen
 
 ## Q4 - Automated Quality Evaluation
 
-* **Metrics implemented:** To be completed.
-* **VLM-as-judge rubric prompt (paste it here):** To be completed.
-* **Results:** `evaluation_template_q4.csv` will be completed and committed to the repository.
+### Metrics implemented:
+
+Two quantitative metrics were calculated for each generated try-on result:
+
+1. **Garment Fidelity Score** – measures similarity between the reference garment and the generated try-on result.
+2. **Identity Preservation Score** – measures similarity between the original person's face and the face in the generated try-on result using face embeddings and cosine similarity.
+
+A combined VLM/quality score was calculated as:
+
+`0.5 × Garment Fidelity Score + 0.5 × Identity Preservation Score`
+
+### VLM-as-judge:
+
+**Qwen2-VL** was used as the VLM-as-judge for qualitative evaluation of the five generated try-on outputs.
+
+For each pair, Qwen2-VL was provided with:
+
+* Original person image
+* Reference garment image
+* Generated try-on image
+
+The evaluation prompt instructed the model to assess:
+
+* Garment color and appearance
+* Garment shape and pattern
+* Neckline and sleeves
+* Visible garment details
+* Identity preservation
+* Fit and placement
+* Visible artifacts
+
+The VLM was also instructed to provide qualitative reasons and identify visible artifacts.
+
+During testing, the VLM returned identical numerical values (`0.50`) for all five pairs despite providing different qualitative explanations. Therefore, these repeated VLM numerical values were **not used as the final quantitative scores**. The VLM output was retained as a qualitative judge for reasons and artifact observations, while the quantitative evaluation uses the independently calculated garment-fidelity and identity-preservation metrics.
+
+### Results:
+
+| Pair      | Garment Fidelity | Identity Preservation | Combined Score |
+| --------- | ---------------: | --------------------: | -------------: |
+| `pair_01` |           0.3398 |                0.4977 |         0.4188 |
+| `pair_02` |           0.2471 |                0.5719 |         0.4095 |
+| `pair_03` |           0.3830 |                0.5781 |         0.4806 |
+| `pair_04` |           0.3216 |                0.6725 |         0.4971 |
+| `pair_05` |           0.3819 |                0.4538 |         0.4179 |
+
+The completed evaluation results are stored in:
+
+`q4_progress.csv`
+
+### Q4 output:
+
+The Q4 pipeline produces the evaluation CSV containing:
+
+* `pair_id`
+* `person_image`
+* `garment_image`
+* `tryon_model`
+* `garment_fidelity_score`
+* `identity_preservation_score`
+* `vlm_judge_score`
+* `vlm_judge_reasons`
+* `artifacts_observed`
+* `notes`
+
+---
 
 ## Q5 - Web Demo
 
@@ -123,9 +178,9 @@ The Q1 output directory contains JSON results for the provided person and garmen
 
 ---
 
-## Honest Failure Log
+# Honest Failure Log
 
-### Q1
+## Q1
 
 * MiniCPM-V 2.6 successfully processed the provided person and garment images.
 * A safe pose-classification wrapper was implemented to handle cases where no pose landmarks are detected.
@@ -133,14 +188,14 @@ The Q1 output directory contains JSON results for the provided person and garmen
 * The no-person edge case was detected correctly.
 * Non-fatal warnings from Transformers/bitsandbytes were observed during inference but did not prevent successful processing.
 
-### Q2
+## Q2
 
 * The crossed-arms edge case (`person_crossed_arms.jpg`) was **not successfully handled** in the human parsing pipeline.
 * The crossed-arms parsing output was therefore not completed.
 * In the other five person images, the **left-hand region was not parsed correctly**.
 * This parsing issue did not affect the final try-on outputs in Q3 because the incorrectly parsed hand region did not materially affect the garment-transfer area used by the try-on pipeline.
 
-### Q3
+## Q3
 
 * The end-to-end try-on inference was successfully completed for all five required person-garment pairs.
 * The outputs were generated in the correct corresponding order:
@@ -153,3 +208,11 @@ The Q1 output directory contains JSON results for the provided person and garmen
 * No pairing or ordering mismatch occurred during inference.
 * All five generated try-on outputs were successfully saved.
 
+## Q4
+
+* The quantitative garment-fidelity and identity-preservation metrics were successfully calculated for all five pairs.
+* Qwen2-VL was successfully loaded and used for qualitative VLM-based evaluation.
+* The VLM returned identical numerical scores of `0.50` across the evaluated pairs despite producing different textual assessments.
+* To avoid treating these non-discriminative VLM values as meaningful quantitative measurements, the final Q4 quantitative score was calculated from the independently measured garment-fidelity and identity-preservation scores.
+* Qwen2-VL qualitative explanations and artifact observations were retained in the Q4 evaluation output.
+* The final Q4 evaluation CSV was successfully generated as `q4_progress.csv`.
