@@ -62,43 +62,67 @@ The Q1 output directory contains JSON results for the provided person and garmen
 
 ## Q2 - Human Parsing & Segmentation
 
-* **Models used (parsing / background removal):** **Grounding DINO** was used for object/region detection, including the person, face, hair, arms, upper clothing, and lower body. Confidence thresholds of **0.25, 0.15, and 0.10** were used for the detections.
+### Models used:
 
-  **SAM (Segment Anything Model)** was used to convert the Grounding DINO bounding boxes into pixel-level segmentation masks and generate the required person/semantic masks.
+**Grounding DINO** was used for object and region detection, including the person, face, hair, arms, upper clothing, and lower body. Confidence thresholds of **0.25, 0.15, and 0.10** were used for the detections.
 
-  **U2Net** was also used for human segmentation/background removal during the Q2 preprocessing pipeline.
+**SAM (Segment Anything Model)** was used to convert the Grounding DINO bounding boxes into pixel-level segmentation masks and generate the required person and semantic masks.
 
-* **How to run:** Run the Q2 notebook/script. The pipeline loads Grounding DINO, SAM, and U2Net, processes the person images, generates the required segmentation/agnostic representations, and processes the garment images for background removal and masking.
+**U2Net** was also used for human segmentation and background removal during the Q2 preprocessing pipeline.
 
-* **Edge cases handled / failed:** The crossed-arms edge case (`person_crossed_arms.jpg`) was **not successfully handled** in the human parsing pipeline.
+### How to run:
 
-  For the other five person images, the **left-hand region was not parsed correctly**.
+Run the Q2 notebook/script. The pipeline loads Grounding DINO, SAM, and U2Net, processes the person images, generates the required segmentation and agnostic representations, and processes the garment images for background removal and masking.
 
-  This parsing issue did not affect the final Q3 try-on outputs because the incorrectly parsed hand region did not materially affect the garment-transfer area.
+### Edge cases handled / failed:
 
-  The remaining person and garment segmentation outputs were generated successfully.
+The crossed-arms edge case (`person_crossed_arms.jpg`) was **not successfully handled** in the human parsing pipeline.
+
+For the other five person images, the **left-hand region was not parsed correctly**.
+
+This parsing issue did not affect the final Q3 try-on outputs because the incorrectly parsed hand region did not materially affect the garment-transfer area.
+
+The remaining person and garment segmentation outputs were generated successfully.
 
 ---
 
 ## Q3 - End-to-End Try-On
 
-* **Try-on model chosen and why:** **CatVTON** was selected as the end-to-end virtual try-on model because it is an open-source diffusion-based try-on model and is relatively lightweight and suitable for running on a free Google Colab T4 GPU.
+### Try-on model chosen and why:
 
-* **Hardware used (GPU, VRAM):** Google Colab **Tesla T4 GPU — 14.56 GB VRAM**. Inference was performed at **384×512 resolution** with **30 inference steps**.
+**CatVTON** was selected as the end-to-end virtual try-on model because it is an open-source diffusion-based try-on model and is relatively lightweight and suitable for running on a free Google Colab T4 GPU.
 
-* **Constraints hit and workarounds:** GPU memory was a constraint when running the diffusion-based try-on pipeline. The inference configuration was kept at **384×512 resolution** with **30 inference steps** to make the pipeline practical within the available Tesla T4 GPU memory.
+### Hardware used:
 
-* **How to run:** Run the Q3 inference notebook/script. The pipeline takes the person image, garment image, and clothing mask produced during preprocessing, passes them to CatVTON, and saves the generated try-on image.
+Google Colab **Tesla T4 GPU — 14.56 GB VRAM**.
 
-* **Output:** End-to-end inference was successfully completed for all five required pairs. The correct person-garment ordering was maintained:
+Inference was performed at **384×512 resolution** with **30 inference steps**.
 
-  1. `person_01 + garment_01`
-  2. `person_02 + garment_02`
-  3. `person_03 + garment_03`
-  4. `person_04 + garment_04`
-  5. `person_05 + garment_05`
+### Constraints hit and workarounds:
 
-  All five corresponding try-on outputs were successfully generated and saved.
+GPU memory was a constraint when running the diffusion-based try-on pipeline.
+
+The inference configuration was kept at **384×512 resolution** with **30 inference steps** to make the pipeline practical within the available Tesla T4 GPU memory.
+
+### How to run:
+
+Run the Q3 inference notebook/script.
+
+The pipeline takes the person image, garment image, and clothing mask produced during preprocessing, passes them to CatVTON, and saves the generated try-on image.
+
+### Output:
+
+End-to-end inference was successfully completed for all five required pairs.
+
+The correct person-garment ordering was maintained:
+
+1. `person_01 + garment_01`
+2. `person_02 + garment_02`
+3. `person_03 + garment_03`
+4. `person_04 + garment_04`
+5. `person_05 + garment_05`
+
+All five corresponding try-on outputs were successfully generated and saved.
 
 ---
 
@@ -111,7 +135,7 @@ Two quantitative metrics were calculated for each generated try-on result:
 1. **Garment Fidelity Score** – measures similarity between the reference garment and the generated try-on result.
 2. **Identity Preservation Score** – measures similarity between the original person's face and the face in the generated try-on result using face embeddings and cosine similarity.
 
-A combined VLM/quality score was calculated as:
+A combined quantitative score was calculated as:
 
 `0.5 × Garment Fidelity Score + 0.5 × Identity Preservation Score`
 
@@ -137,7 +161,9 @@ The evaluation prompt instructed the model to assess:
 
 The VLM was also instructed to provide qualitative reasons and identify visible artifacts.
 
-During testing, the VLM returned identical numerical values (`0.50`) for all five pairs despite providing different qualitative explanations. Therefore, these repeated VLM numerical values were **not used as the final quantitative scores**. The VLM output was retained as a qualitative judge for reasons and artifact observations, while the quantitative evaluation uses the independently calculated garment-fidelity and identity-preservation metrics.
+During testing, the VLM returned identical numerical values (`0.50`) for all five pairs despite providing different qualitative explanations. Therefore, these repeated VLM numerical values were **not used as the final quantitative scores**.
+
+The VLM output was retained as a qualitative judge for reasons and artifact observations, while the quantitative evaluation uses the independently calculated garment-fidelity and identity-preservation metrics.
 
 ### Results:
 
@@ -170,11 +196,73 @@ The Q4 pipeline produces the evaluation CSV containing:
 
 ---
 
-## Q5 - Web Demo
+## Q5 - Mini Try-On Web Demo
 
-* **Framework (Gradio/Streamlit):** To be completed.
-* **How to launch:** To be completed.
-* **Guardrails implemented:** To be completed.
+### Implementation status:
+
+A basic web-demo prototype was attempted using **Gradio** to expose the virtual try-on workflow through an interactive interface.
+
+However, the final Q5 implementation did **not fully meet the requirements of the assessment**.
+
+In particular, the virtual try-on results produced through the demo were not consistently accurate when compared with the outputs generated during the dedicated Q3 inference stage.
+
+The Q3 CatVTON pipeline and its five generated outputs remain the more reliable results of the implementation.
+
+### Limitations:
+
+Due to the limited time available for the assessment, the complete Q2 → Q3 → Q4 integration required for a reliable interactive demo could not be completed and validated properly.
+
+The following parts of Q5 were therefore incomplete or insufficiently validated:
+
+* The interactive virtual try-on results were not consistently comparable to the dedicated Q3 CatVTON outputs.
+* The Q4 automated evaluation was not fully integrated into the web application.
+* The required guardrail behavior for all provided edge cases was not validated within the final application.
+* End-to-end testing of the complete interactive pipeline was limited by the available development time and Colab GPU constraints.
+
+### Intended design:
+
+The intended Q5 application architecture was:
+
+```text
+Person Image + Garment Image
+              ↓
+        Q1 Understanding
+              ↓
+       Q2 Preprocessing
+              ↓
+        CatVTON (Q3)
+              ↓
+       Q4 Evaluation
+              ↓
+    Result + Quality Scores
+```
+
+The intended guardrails were also designed to:
+
+* Reject inputs where no person is detected.
+* Warn when the person is seated.
+* Warn when the person is shown from a side view.
+* Display an estimated processing time.
+
+These components represent the intended production flow, but the complete implementation was not sufficiently validated within the available assessment time.
+
+### Honest assessment:
+
+Q5 should therefore be considered a **prototype-level and incomplete integration** rather than a fully validated mini web application.
+
+The main limitation was not the absence of the underlying Q3 try-on pipeline; rather, it was the time required to reliably connect and validate all previous stages inside a single interactive application.
+
+With additional development time and proper technical guidance, the implementation could be significantly improved by:
+
+1. Reusing the exact Q3 CatVTON inference configuration inside the web application.
+2. Connecting the Q2 preprocessing pipeline directly to the uploaded inputs.
+3. Integrating the independently calculated Q4 garment-fidelity and identity-preservation metrics.
+4. Implementing and validating all three required guardrails.
+5. Adding robust error handling and input validation.
+6. Testing the complete application against both normal inputs and all provided edge cases.
+7. Optimizing GPU memory usage and inference time for interactive use.
+
+The incomplete Q5 integration is documented explicitly rather than presenting unvalidated demo results as equivalent to the dedicated Q3 results.
 
 ---
 
@@ -216,3 +304,13 @@ The Q4 pipeline produces the evaluation CSV containing:
 * To avoid treating these non-discriminative VLM values as meaningful quantitative measurements, the final Q4 quantitative score was calculated from the independently measured garment-fidelity and identity-preservation scores.
 * Qwen2-VL qualitative explanations and artifact observations were retained in the Q4 evaluation output.
 * The final Q4 evaluation CSV was successfully generated as `q4_progress.csv`.
+
+## Q5
+
+* A Gradio-based web demo prototype was attempted.
+* The virtual try-on results produced through the demo were not sufficiently accurate or consistent compared with the dedicated Q3 CatVTON outputs.
+* The Q4 evaluation was not fully integrated and validated within the web application.
+* The required guardrails were not completely validated in the final interactive application.
+* These limitations were primarily due to the limited time available for completing and testing the complete Q2 → Q3 → Q4 → Q5 integration, together with the GPU and inference constraints encountered during development.
+* The Q3 inference results remain the reliable set of generated try-on outputs submitted for the assessment.
+* With additional development time and appropriate technical guidance, the web demo could be improved by reusing the validated Q3 inference pipeline, integrating the Q4 evaluation correctly, and fully implementing and testing the required guardrails.
