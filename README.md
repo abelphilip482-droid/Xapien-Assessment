@@ -8,7 +8,7 @@
 
 **GitHub repo link:** https://github.com/abelphilip482-droid/Xapien-Assessment
 
-**Demo video link (max 5 min):** To be added
+**Demo video link (max 5 min):** (https://drive.google.com/drive/folders/1-ede46eMxlouMsOLR6ntZac35XTQhtyF)
 
 ---
 
